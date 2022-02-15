@@ -3,6 +3,7 @@ package fr.hardback.managers.commands;
 import fr.hardback.Hub;
 import fr.hardback.spigot.tools.item.ItemBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,14 +21,16 @@ public class CommandChest implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        Inventory inventory = Bukkit.createInventory(null, 9, "Animated Gui");
+        Inventory inventory = Bukkit.createInventory(null, 53, "Animated Gui");
 
         new BukkitRunnable(){
             @Override
             public void run() {
-                inventory.setItem(4, new ItemBuilder(Material.values()[new Random().nextInt(Material.values().length)]).toItemStack());
+                for(int i = 0; i < 53; i++){
+                    inventory.setItem(i, new ItemBuilder(Material.values()[new Random().nextInt(Material.values().length)]).setName(ChatColor.GREEN + "Random Item").toItemStack());
+                }
             }
-        }.runTaskTimer(Hub.getInstance(), 0L, 20L);
+        }.runTaskTimer(Hub.getInstance(), 0L, 10L);
 
         player.openInventory(inventory);
         return false;
