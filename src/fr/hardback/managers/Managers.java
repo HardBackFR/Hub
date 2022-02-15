@@ -1,7 +1,6 @@
 package fr.hardback.managers;
 
 import fr.hardback.Hub;
-import fr.hardback.managers.commands.CommandChest;
 import fr.hardback.managers.listeners.CancelListener;
 import fr.hardback.managers.listeners.PlayerListener;
 import org.bukkit.plugin.PluginManager;
@@ -17,7 +16,5 @@ public class Managers {
 
         pluginManager.registerEvents(new PlayerListener(this.instance), this.instance);
         pluginManager.registerEvents(new CancelListener(this.instance), this.instance);
-
-        this.instance.getCommand("test").setExecutor(new CommandChest());
     }
 }
