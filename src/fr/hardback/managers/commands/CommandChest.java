@@ -21,12 +21,12 @@ public class CommandChest implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        Inventory inventory = Bukkit.createInventory(null, 9 * 6, "Animated Gui");
+        Inventory inventory = Bukkit.createInventory(null, 54, "Animated Gui");
 
         new BukkitRunnable(){
             @Override
             public void run() {
-                for(int i = 0; i < 9 * 6; i++){
+                for(int i = 0; i < 54; i++){
                     inventory.setItem(i, new ItemBuilder(Material.values()[new Random().nextInt(Material.values().length)]).setName(ChatColor.GREEN + "Random Item").toItemStack());
                 }
             }
