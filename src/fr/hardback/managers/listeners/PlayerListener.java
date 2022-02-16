@@ -15,11 +15,13 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.material.EnderChest;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
 
@@ -121,6 +123,13 @@ public class PlayerListener implements Listener {
         if(event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "Firework")) {
             CustomFirework.launchFirework(player);
             player.getInventory().remove(player.getInventory().getItemInHand());
+        }
+
+        if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+            if(event.getClickedBlock().getState() instanceof EnderChest){
+                player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
+                player.sendMessage(ChatColor.GREEN + "Coffre magique en développement !");
+            }
         }
     }
     @EventHandler

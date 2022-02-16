@@ -36,24 +36,13 @@ public class CommandSpawnChest implements CommandExecutor {
             return true;
         }
 
-        final Block playerBlock = player.getLocation().getBlock();
-        final Block blockUnder = playerBlock.getRelative(BlockFace.DOWN);
+        final Block block = player.getLocation().getBlock();
+        final Block blockBelow = block.getRelative(BlockFace.DOWN);
 
-        if(blockUnder.getType().equals(Material.AIR)){
-            final List<Block> blockList = Arrays.asList(blockUnder, blockUnder.getRelative(BlockFace.EAST), blockUnder.getRelative(BlockFace.WEST), blockUnder.getRelative(BlockFace.NORTH), blockUnder.getRelative(BlockFace.SOUTH), blockUnder.getRelative(BlockFace.NORTH).getRelative(BlockFace.WEST), blockUnder.getRelative(BlockFace.NORTH).getRelative(BlockFace.EAST), blockUnder.getRelative(BlockFace.SOUTH).getRelative(BlockFace.WEST), blockUnder.getRelative(BlockFace.SOUTH).getRelative(BlockFace.EAST));
+        blockBelow.setType(Material.ENDER_CHEST);
 
-            for(Block block : blockList) block.setType(Material.ENDER_CHEST);
-
-            player.getServer().getScheduler().runTaskLater(this.instance, () -> {
-                for(Block block : blockList){
-                    if (block != null && block.getType() == Material.BEDROCK) block.setType(Material.AIR);
-                }
-                blockList.clear();
-            }, 2 * 1200L);
-        }
-
-        String[] text = {ChatColor.DARK_PURPLE + "Coffre Magique"};
-        Hologram hologram = new Hologram(text, player.getLocation().add(new Vector(0, +1, 0)));
+        final String[] text = {ChatColor.DARK_PURPLE + "Coffre Magique"};
+        final Hologram hologram = new Hologram(text, player.getLocation().add(new Vector(0, +0.25, 0)));
         hologram.showPlayer(player);
         return false;
     }
