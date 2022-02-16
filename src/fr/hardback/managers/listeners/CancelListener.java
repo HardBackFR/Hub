@@ -1,6 +1,7 @@
 package fr.hardback.managers.listeners;
 
 import fr.hardback.Hub;
+import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,15 +27,15 @@ public class CancelListener implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent event){ event.setCancelled(true); }
 
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent event){ event.setCancelled(true); }
+    public void onBlockBreak(BlockBreakEvent event){ event.setCancelled(!event.getPlayer().getGameMode().equals(GameMode.CREATIVE)); }
 
     @EventHandler
-    public void onBlockPlace(BlockPlaceEvent event){ event.setCancelled(true); }
+    public void onBlockPlace(BlockPlaceEvent event){ event.setCancelled(!event.getPlayer().getGameMode().equals(GameMode.CREATIVE)); }
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event){
-        event.setCancelled(true);
-        event.setCancelled(event.getCause() == EntityDamageEvent.DamageCause.FALL);
+        event.setCancelled(event.getEntity().getType() != EntityType.PLAYER);
+        event.setCancelled(event.getCause().equals(EntityDamageEvent.DamageCause.FALL));
     }
 
     @EventHandler
