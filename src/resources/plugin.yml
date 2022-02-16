@@ -4,3 +4,6 @@ author: KIZAFOX
 main: fr.hardback.Hub
 description: HardBack Hub
 website: https://twitter.fr/KIZAFOX
+
+commands:
+  spawnchest:
