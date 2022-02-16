@@ -18,6 +18,7 @@ public class Managers {
         pluginManager.registerEvents(new PlayerListener(this.instance), this.instance);
         pluginManager.registerEvents(new CancelListener(this.instance), this.instance);
 
+
         this.instance.getCommand("spawnchest").setExecutor(new CommandSpawnChest(this.instance));
     }
 }

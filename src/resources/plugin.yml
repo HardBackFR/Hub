@@ -7,3 +7,4 @@ website: https://twitter.fr/KIZAFOX
 
 commands:
   spawnchest:
+    description: "Fait spawn un coffre animé"
