@@ -79,9 +79,8 @@ public class PlayerListener implements Listener {
 
         this.instance.getStaticInventory().setInventoryPlayer(player);
 
-        String[] text = {ChatColor.GOLD + "" + ChatColor.BOLD + "Votre profil", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "-[--------------------]-", ChatColor.GRAY + "Grade: " + accountManager.getRank().getPrefix(), ChatColor.GRAY + "Crédits: " + ChatColor.LIGHT_PURPLE + accountManager.getCredits(), ChatColor.GRAY + "Coins: " + ChatColor.YELLOW + accountManager.getCoins(), ChatColor.GRAY + "Première connexion le " + ChatColor.RED + accountManager.getCreatedAt()};
-        Hologram hologram = new Hologram(text, player.getLocation().add(new Vector(0, 0, -4)));
-        hologram.showPlayer(player);
+        final String[] text = {ChatColor.GOLD + "" + ChatColor.BOLD + "Votre profil", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "-[--------------------]-", ChatColor.GRAY + "Grade: " + accountManager.getRank().getPrefix(), ChatColor.GRAY + "Crédits: " + ChatColor.LIGHT_PURPLE + accountManager.getCredits(), ChatColor.GRAY + "Coins: " + ChatColor.YELLOW + accountManager.getCoins(), ChatColor.GRAY + "Première connexion le " + ChatColor.RED + accountManager.getCreatedAt()};
+        new Hologram(text, player.getLocation().add(new Vector(0, 0, -4))).showPlayer(player);
 
         this.instance.getScheduledExecutorService().schedule(() -> {
             if (!player.isOnline()) return;
@@ -125,11 +124,9 @@ public class PlayerListener implements Listener {
             player.getInventory().remove(player.getInventory().getItemInHand());
         }
 
-        if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-            if(event.getClickedBlock().getState() instanceof EnderChest){
-                player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
-                player.sendMessage(ChatColor.GREEN + "Coffre magique en développement !");
-            }
+        if(event.getClickedBlock().getState() instanceof EnderChest){
+            player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
+            player.sendMessage(ChatColor.GREEN + "Coffre magique en développement !");
         }
     }
     @EventHandler

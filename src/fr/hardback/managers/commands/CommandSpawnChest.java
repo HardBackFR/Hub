@@ -4,6 +4,7 @@ import fr.hardback.Hub;
 import fr.hardback.commons.DatabaseManager;
 import fr.hardback.spigot.tools.hologram.Hologram;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -39,11 +40,11 @@ public class CommandSpawnChest implements CommandExecutor {
         final Block block = player.getLocation().getBlock();
         final Block blockBelow = block.getRelative(BlockFace.DOWN);
 
+        blockBelow.getLocation(player.getLocation().add(new Vector(0, 1, 0)));
         blockBelow.setType(Material.ENDER_CHEST);
 
         final String[] text = {ChatColor.DARK_PURPLE + "Coffre Magique"};
-        final Hologram hologram = new Hologram(text, player.getLocation().add(new Vector(0, +0.25, 0)));
-        hologram.showPlayer(player);
+        new Hologram(text, player.getLocation().add(new Vector(0, +0.25, 0))).showPlayer(player);
         return false;
     }
 }

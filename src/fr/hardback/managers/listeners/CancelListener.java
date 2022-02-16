@@ -1,6 +1,7 @@
 package fr.hardback.managers.listeners;
 
 import fr.hardback.Hub;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -10,6 +11,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
 public class CancelListener implements Listener {
@@ -26,23 +28,28 @@ public class CancelListener implements Listener {
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event){ event.setCancelled(true); }
 
-    @EventHandler
-    public void onBlockBreak(BlockBreakEvent event){ if(!event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) event.setCancelled(true);}
 
     @EventHandler
-    public void onBlockPlace(BlockPlaceEvent event){ if(!event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) event.setCancelled(true); }
+    public void onBlockBreak(BlockBreakEvent event){
+        event.setCancelled(!event.getPlayer().getGameMode().equals(GameMode.CREATIVE));
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event){
+        event.setCancelled(!event.getPlayer().getGameMode().equals(GameMode.CREATIVE));
+    }
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event){
-        event.setCancelled(event.getEntity().getType() != EntityType.PLAYER);
+        event.setCancelled(true);
+        event.setCancelled(!event.getEntity().getType().equals(EntityType.PLAYER));
         event.setCancelled(event.getCause().equals(EntityDamageEvent.DamageCause.FALL));
     }
 
     @EventHandler
-    public void onWeatherChanger(WeatherChangeEvent event) { event.setCancelled(true); }
-
-    @EventHandler
-    public void onEntitySpawn(EntitySpawnEvent event){ event.setCancelled(true); }
+    public void onWeatherChanger(WeatherChangeEvent event) {
+        event.setCancelled(true);
+    }
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event){ event.setCancelled(true); }
@@ -53,4 +60,10 @@ public class CancelListener implements Listener {
     @EventHandler
     public void onAchievement(PlayerAchievementAwardedEvent event){ event.setCancelled(true); }
 
+    @EventHandler
+    public void onGameModeChange(PlayerGameModeChangeEvent event){
+        if(event.getNewGameMode().equals(GameMode.CREATIVE)){
+            event.getPlayer().sendMessage(ChatColor.RED + "Attention tu peux maintenant casser/poser des blocs !");
+        }
+    }
 }
