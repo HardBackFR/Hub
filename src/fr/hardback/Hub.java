@@ -15,7 +15,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-public class Hub extends JavaPlugin {
+public final class Hub extends JavaPlugin {
 
     private static Hub instance;
 

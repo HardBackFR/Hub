@@ -13,9 +13,9 @@ import fr.hardback.utils.inventory.gui.main.GuiMain;
 import fr.hardback.utils.inventory.gui.shop.GuiShop;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -45,10 +45,10 @@ public class PlayerListener implements Listener {
 
         event.setJoinMessage(null);
         if(accountManager.getRank().isStaff()) {
-            event.setJoinMessage(accountManager.getRank().getPrefix() + "" + player.getName() + ChatColor.GOLD + " s'est connecté au Hub !");
             player.setAllowFlight(true);
             player.setFlying(true);
             CustomFirework.launchFirework(player);
+            event.setJoinMessage(accountManager.getRank().getPrefix() + "" + player.getName() + ChatColor.GOLD + " s'est connecté au Hub !");
         }
 
         this.setNameTag(player);
@@ -60,7 +60,7 @@ public class PlayerListener implements Listener {
             player.removePotionEffect(potionEffect.getType());
         }
 
-        player.teleport(new Location(Bukkit.getWorlds().get(0), -52.400, 57.0, 177.271, -132.8f, 3.0f));
+        player.teleport(new Location(Bukkit.getWorlds().get(0), -0.495, 100.0, -51.429, -0.1f, -0.2f));
         player.setGameMode(GameMode.ADVENTURE);
         player.setFoodLevel(20);
         player.setWalkSpeed(0.20F);
@@ -80,7 +80,7 @@ public class PlayerListener implements Listener {
         this.instance.getStaticInventory().setInventoryPlayer(player);
 
         final String[] text = {ChatColor.GOLD + "" + ChatColor.BOLD + "Votre profil", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "-[--------------------]-", ChatColor.GRAY + "Grade: " + accountManager.getRank().getPrefix(), ChatColor.GRAY + "Crédits: " + ChatColor.LIGHT_PURPLE + accountManager.getCredits(), ChatColor.GRAY + "Coins: " + ChatColor.YELLOW + accountManager.getCoins(), ChatColor.GRAY + "Première connexion le " + ChatColor.RED + accountManager.getCreatedAt()};
-        new Hologram(text, player.getLocation().add(new Vector(0, 0, -4))).showPlayer(player);
+        new Hologram(text, player.getLocation().add(new Vector(0, 0, +4))).showPlayer(player);
 
         this.instance.getScheduledExecutorService().schedule(() -> {
             if (!player.isOnline()) return;
@@ -124,7 +124,8 @@ public class PlayerListener implements Listener {
             player.getInventory().remove(player.getInventory().getItemInHand());
         }
 
-        if(event.getClickedBlock().getState() instanceof EnderChest){
+        if(event.getClickedBlock().getType() == Material.ENDER_CHEST){
+            event.setUseInteractedBlock(Event.Result.DENY);
             player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
             player.sendMessage(ChatColor.GREEN + "Coffre magique en développement !");
         }

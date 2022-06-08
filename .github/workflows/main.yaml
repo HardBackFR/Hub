@@ -20,4 +20,4 @@ jobs:
       - name: deploy
         run:
           sshpass -e ssh -o stricthostkeychecking=no ${{ secrets.APP_USER }}@${{ secrets.APP_HOST }}
-          "cd /home/admin/minecraft-servers/hub1/plugins/ && rm Hub.jar && wget https://github.com/HardBackFR/Hub/raw/main/out/Hub.jar"
+          "cd /home/minecraft/servers/hub/plugins/ && rm Hub.jar && wget https://github.com/HardBackFR/Hub/raw/main/out/Hub.jar"

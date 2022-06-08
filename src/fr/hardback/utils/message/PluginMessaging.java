@@ -50,7 +50,7 @@ public class PluginMessaging implements PluginMessageListener{
     }
 
     public static Integer getPlayerCount(String name) {
-        return playerCount.get(name);
+        return playerCount.get(name) == null ? 0 : playerCount.get(name);
     }
 
     public static void connect(String name, Player player) {
