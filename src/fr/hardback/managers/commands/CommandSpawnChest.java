@@ -38,11 +38,14 @@ public class CommandSpawnChest implements CommandExecutor {
         }
 
         Location location = player.getLocation();
-        Block block = new Location(location.getWorld(), location.getX(), location.getY() + 1, location.getZ()).getBlock();
-        block.setType(Material.ENDER_CHEST);
 
         final String[] text = {ChatColor.DARK_PURPLE + "Coffre Magique"};
-        new Hologram(text, location).showPlayer(player);
+        new Hologram(text, location.add(new Vector(0, -0.5, 0))).showPlayer(player);
+
+        location = player.getLocation().add(new Vector(0, 2, 0));
+
+        Block block = new Location(location.getWorld(), location.getX(), location.getY() + 1, location.getZ()).getBlock();
+        block.setType(Material.ENDER_CHEST);
         return false;
     }
 }
