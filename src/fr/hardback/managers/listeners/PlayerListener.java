@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -124,10 +125,12 @@ public class PlayerListener implements Listener {
             player.getInventory().remove(player.getInventory().getItemInHand());
         }
 
-        if(event.getClickedBlock().getType() == Material.ENDER_CHEST){
-            player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
-            player.sendMessage(ChatColor.GREEN + "Coffre magique en développement !");
-            event.setUseInteractedBlock(Event.Result.DENY);
+        if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
+            if(event.getClickedBlock().getType().equals(Material.ENDER_CHEST)){
+                player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
+                player.sendMessage(ChatColor.GREEN + "Coffre magique en développement !");
+                event.setUseInteractedBlock(Event.Result.DENY);
+            }
         }
     }
     @EventHandler
