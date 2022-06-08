@@ -125,9 +125,9 @@ public class PlayerListener implements Listener {
         }
 
         if(event.getClickedBlock().getType() == Material.ENDER_CHEST){
-            event.setUseInteractedBlock(Event.Result.DENY);
             player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
             player.sendMessage(ChatColor.GREEN + "Coffre magique en développement !");
+            event.setUseInteractedBlock(Event.Result.DENY);
         }
     }
     @EventHandler

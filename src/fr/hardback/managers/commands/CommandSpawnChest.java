@@ -38,7 +38,7 @@ public class CommandSpawnChest implements CommandExecutor {
         }
 
         Location location = player.getLocation();
-        Block block = new Location(location.getWorld(), location.getX(), location.getZ() + 1, location.getZ()).getBlock();
+        Block block = new Location(location.getWorld(), location.getX(), location.getY() + 1, location.getZ()).getBlock();
         block.setType(Material.ENDER_CHEST);
 
         final String[] text = {ChatColor.DARK_PURPLE + "Coffre Magique"};
