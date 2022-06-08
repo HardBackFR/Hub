@@ -31,12 +31,16 @@ public class CancelListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event){
-        event.setCancelled(!event.getPlayer().getGameMode().equals(GameMode.CREATIVE));
+        if(!(event.getPlayer().getGameMode() == GameMode.CREATIVE)){
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event){
-        event.setCancelled(!event.getPlayer().getGameMode().equals(GameMode.CREATIVE));
+        if(!(event.getPlayer().getGameMode() == GameMode.CREATIVE)){
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler

@@ -80,7 +80,7 @@ public class PlayerListener implements Listener {
         this.instance.getStaticInventory().setInventoryPlayer(player);
 
         final String[] text = {ChatColor.GOLD + "" + ChatColor.BOLD + "Votre profil", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "-[--------------------]-", ChatColor.GRAY + "Grade: " + accountManager.getRank().getPrefix(), ChatColor.GRAY + "Crédits: " + ChatColor.LIGHT_PURPLE + accountManager.getCredits(), ChatColor.GRAY + "Coins: " + ChatColor.YELLOW + accountManager.getCoins(), ChatColor.GRAY + "Première connexion le " + ChatColor.RED + accountManager.getCreatedAt()};
-        new Hologram(text, player.getLocation().add(new Vector(0, 0, +4))).showPlayer(player);
+        new Hologram(text, player.getLocation()).showPlayer(player);
 
         this.instance.getScheduledExecutorService().schedule(() -> {
             if (!player.isOnline()) return;
