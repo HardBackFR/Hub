@@ -28,18 +28,6 @@ public class CancelListener implements Listener {
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event){ event.setCancelled(true); }
 
-/**
-    @EventHandler
-    public void onBlockBreak(BlockBreakEvent event){
-        event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onBlockPlace(BlockPlaceEvent event){
-        event.setCancelled(true);
-    }
-**/
-
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event){
         event.setCancelled(true);
