@@ -2,6 +2,7 @@ package fr.hardback;
 
 import fr.hardback.commons.DatabaseManager;
 import fr.hardback.managers.Managers;
+import fr.hardback.spigot.tools.pets.PetManager;
 import fr.hardback.spigot.tools.rank.RankUnit;
 import fr.hardback.utils.inventory.StaticInventory;
 import fr.hardback.utils.message.PluginMessaging;
@@ -29,6 +30,9 @@ public final class Hub extends JavaPlugin {
     private Scoreboard scoreboard;
     private ScoreboardManager scoreboardManager;
 
+    public PetManager petManager;
+    public PetManager playerPetManager;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -42,6 +46,7 @@ public final class Hub extends JavaPlugin {
         this.world.setGameRuleValue("doDaylightCycle", "false");
         this.world.setWeatherDuration(0);
         this.world.setDifficulty(Difficulty.PEACEFUL);
+        this.world.setPVP(false);
         this.world.setTime(this.getConfig().getLong("time", 6000L));
 
         this.staticInventory = new StaticInventory(this);
@@ -61,11 +66,14 @@ public final class Hub extends JavaPlugin {
             this.scoreboard.registerNewTeam(String.valueOf(ranks.getPower()));
             this.scoreboard.getTeam(String.valueOf(ranks.getPower())).setPrefix(ranks.getPrefix());
         }
+
+        this.petManager = new PetManager();
     }
 
     @Override
     public void onDisable() {
         DatabaseManager.closeAllConnection();
+        this.petManager.unloadCosmetic();
     }
 
     public static Hub getInstance() {
@@ -94,5 +102,9 @@ public final class Hub extends JavaPlugin {
 
     public ScoreboardManager getScoreboardManager() {
         return scoreboardManager;
+    }
+
+    public PetManager getPlayerPetManager() {
+        return playerPetManager;
     }
 }

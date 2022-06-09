@@ -1,17 +1,12 @@
 package fr.hardback.managers.listeners;
 
 import fr.hardback.Hub;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
 public class CancelListener implements Listener {
@@ -49,10 +44,4 @@ public class CancelListener implements Listener {
     @EventHandler
     public void onAchievement(PlayerAchievementAwardedEvent event){ event.setCancelled(true); }
 
-    @EventHandler
-    public void onGameModeChange(PlayerGameModeChangeEvent event){
-        if(event.getNewGameMode().equals(GameMode.CREATIVE)){
-            event.getPlayer().sendMessage(ChatColor.RED + "Attention tu peux maintenant casser/poser des blocs !");
-        }
-    }
 }

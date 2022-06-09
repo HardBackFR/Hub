@@ -7,6 +7,10 @@ import fr.hardback.commons.data.AccountData;
 import fr.hardback.spigot.tools.fancymessage.FancyMessage;
 import fr.hardback.spigot.tools.firework.CustomFirework;
 import fr.hardback.spigot.tools.hologram.Hologram;
+import fr.hardback.spigot.tools.npc.NPC;
+import fr.hardback.spigot.tools.npc.NPCManager;
+import fr.hardback.spigot.tools.pets.PetManager;
+import fr.hardback.spigot.tools.pets.Pets;
 import fr.hardback.spigot.tools.title.TitleManager;
 import fr.hardback.utils.inventory.gui.cosmetics.GuiCosmetics;
 import fr.hardback.utils.inventory.gui.main.GuiMain;
@@ -18,10 +22,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
 
@@ -45,14 +46,17 @@ public class PlayerListener implements Listener {
 
         event.setJoinMessage(null);
         if(accountManager.getRank().isStaff()) {
-            player.setAllowFlight(true);
-            player.setFlying(true);
-            CustomFirework.launchFirework(player);
             event.setJoinMessage(accountManager.getRank().getPrefix() + "" + player.getName() + ChatColor.GOLD + " s'est connecté au Hub !");
+            this.instance.getScheduledExecutorService().schedule(() -> {
+                player.setAllowFlight(true);
+                player.setFlying(true);
+                CustomFirework.launchFirework(player);
+            }, 2, TimeUnit.SECONDS);
         }
 
         this.setNameTag(player);
         this.instance.getScoreboardManager().onLogin(player);
+        this.instance.playerPetManager = new PetManager(event.getPlayer());
 
         TitleManager.sendTitle(player, ChatColor.YELLOW + "HardBack", ChatColor.RED + "Actuellement en maintenance..", 20, 20, 20);
 
@@ -67,7 +71,7 @@ public class PlayerListener implements Listener {
         player.setFlySpeed(0.15F);
         player.setAllowFlight(false);
         player.setExp(0);
-        player.setLevel(0);
+        player.setLevel(DatabaseManager.REDIS.getAccountData(player.getUniqueId()).getMysteryKeys());
         player.setMaxHealth(20.0D);
         player.setHealth(player.getMaxHealth());
 
@@ -81,6 +85,8 @@ public class PlayerListener implements Listener {
 
         final String[] text = {ChatColor.GOLD + "" + ChatColor.BOLD + "Votre profil", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "-[--------------------]-", ChatColor.GRAY + "Grade: " + accountManager.getRank().getPrefix(), ChatColor.GRAY + "Crédits: " + ChatColor.LIGHT_PURPLE + accountManager.getCredits(), ChatColor.GRAY + "Coins: " + ChatColor.YELLOW + accountManager.getCoins(), ChatColor.GRAY + "Première connexion le " + ChatColor.RED + accountManager.getCreatedAt()};
         new Hologram(text, player.getLocation().add(new Vector(0, 0, 3))).showPlayer(player);
+
+        new NPCManager().createNPC(NPC.NAVIGATEUR, this.instance);
 
         this.instance.getScheduledExecutorService().schedule(() -> {
             if (!player.isOnline()) return;
@@ -101,6 +107,7 @@ public class PlayerListener implements Listener {
     public void onLogout(PlayerQuitEvent event){
         event.setQuitMessage(null);
         this.instance.getScoreboardManager().onLogout(event.getPlayer());
+        this.instance.petManager.unloadCosmetic();
     }
 
     @EventHandler
@@ -108,6 +115,13 @@ public class PlayerListener implements Listener {
         if(event.isCancelled()) return;
 
         event.setFormat(DatabaseManager.REDIS.getAccountData(event.getPlayer().getUniqueId()).getRank().getPrefix() + event.getPlayer().getName() + ChatColor.GRAY + " » " + ChatColor.WHITE + event.getMessage());
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event){
+        if(event.getPlayer().getLocation().getX() <= 53) event.getPlayer().teleport(new Location(Bukkit.getWorlds().get(0), -0.495, 100.0, -51.429, -0.1f, -0.2f));
+
+        this.instance.playerPetManager.loadCosmetic(Pets.RubiksCube, this.instance);
     }
 
     @EventHandler
@@ -124,7 +138,7 @@ public class PlayerListener implements Listener {
             player.getInventory().remove(player.getInventory().getItemInHand());
         }
 
-        if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
+        if(event.getAction() == Action.LEFT_CLICK_BLOCK){
             if(event.getClickedBlock().getType().equals(Material.ENDER_CHEST)){
                 player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
                 player.sendMessage(ChatColor.GREEN + "Coffre magique en développement !");
@@ -132,6 +146,7 @@ public class PlayerListener implements Listener {
             }
         }
     }
+
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event){
         final Player player = (Player) event.getWhoClicked();

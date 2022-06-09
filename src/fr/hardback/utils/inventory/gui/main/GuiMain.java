@@ -86,7 +86,7 @@ public class GuiMain extends AbstractGui {
                 PluginMessaging.connect("killskill", player);
             }else if(itemStack.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.DARK_RED + "Serveur STAFF")) {
                 player.closeInventory();
-                PluginMessaging.connect("staff-server", player);
+                PluginMessaging.connect("admin", player);
             }else if(itemStack.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.AQUA + "Boutique")) {
                 player.closeInventory();
                 new GuiShop(this.instance, player).display();
