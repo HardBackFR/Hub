@@ -16,11 +16,11 @@ import fr.hardback.utils.inventory.gui.cosmetics.GuiCosmetics;
 import fr.hardback.utils.inventory.gui.main.GuiMain;
 import fr.hardback.utils.inventory.gui.shop.GuiShop;
 import org.bukkit.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffect;
@@ -51,7 +51,7 @@ public class PlayerListener implements Listener {
                 player.setAllowFlight(true);
                 player.setFlying(true);
                 CustomFirework.launchFirework(player);
-            }, 2, TimeUnit.SECONDS);
+            }, 50, TimeUnit.MILLISECONDS);
         }
 
         this.setNameTag(player);
@@ -86,7 +86,7 @@ public class PlayerListener implements Listener {
         final String[] text = {ChatColor.GOLD + "" + ChatColor.BOLD + "Votre profil", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "-[--------------------]-", ChatColor.GRAY + "Grade: " + accountManager.getRank().getPrefix(), ChatColor.GRAY + "Crédits: " + ChatColor.LIGHT_PURPLE + accountManager.getCredits(), ChatColor.GRAY + "Coins: " + ChatColor.YELLOW + accountManager.getCoins(), ChatColor.GRAY + "Première connexion le " + ChatColor.RED + accountManager.getCreatedAt()};
         new Hologram(text, player.getLocation().add(new Vector(0, 0, 3))).showPlayer(player);
 
-        new NPCManager().createNPC(NPC.NAVIGATEUR, this.instance);
+        new NPCManager().createNPC(NPC.NAVIGATEUR, player, this.instance);
 
         this.instance.getScheduledExecutorService().schedule(() -> {
             if (!player.isOnline()) return;
@@ -119,7 +119,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event){
-        if(event.getPlayer().getLocation().getX() <= 53) event.getPlayer().teleport(new Location(Bukkit.getWorlds().get(0), -0.495, 100.0, -51.429, -0.1f, -0.2f));
+        if(event.getPlayer().getLocation().getX() < 53) event.getPlayer().teleport(new Location(Bukkit.getWorlds().get(0), -0.495, 100.0, -51.429, -0.1f, -0.2f));
 
         this.instance.playerPetManager.loadCosmetic(Pets.RubiksCube, this.instance);
     }
@@ -137,13 +137,15 @@ public class PlayerListener implements Listener {
             CustomFirework.launchFirework(player);
             player.getInventory().remove(player.getInventory().getItemInHand());
         }
+    }
 
-        if(event.getAction() == Action.LEFT_CLICK_BLOCK){
-            if(event.getClickedBlock().getType().equals(Material.ENDER_CHEST)){
-                player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
-                player.sendMessage(ChatColor.GREEN + "Coffre magique en développement !");
-                event.setUseInteractedBlock(Event.Result.DENY);
-            }
+    @EventHandler
+    public void onInteract(PlayerInteractAtEntityEvent event){
+        Player player = event.getPlayer();
+        Entity entity = event.getRightClicked();
+
+        if(entity.getType() == EntityType.ARMOR_STAND){
+            if(entity.getCustomName().equalsIgnoreCase(NPC.NAVIGATEUR.getName())) new GuiMain(this.instance, player).display();
         }
     }
 
