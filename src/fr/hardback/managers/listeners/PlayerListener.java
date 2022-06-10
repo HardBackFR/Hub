@@ -4,6 +4,8 @@ import fr.hardback.Hub;
 import fr.hardback.bungee.core.rank.RankUnit;
 import fr.hardback.commons.DatabaseManager;
 import fr.hardback.commons.data.AccountData;
+import fr.hardback.spigot.tools.DirectionUtils;
+import fr.hardback.spigot.tools.actionbar.ActionBarAPI;
 import fr.hardback.spigot.tools.fancymessage.FancyMessage;
 import fr.hardback.spigot.tools.firework.CustomFirework;
 import fr.hardback.spigot.tools.hologram.Hologram;
@@ -84,22 +86,22 @@ public class PlayerListener implements Listener {
         this.instance.getStaticInventory().setInventoryPlayer(player);
 
         final String[] text = {ChatColor.GOLD + "" + ChatColor.BOLD + "Votre profil", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "-[--------------------]-", ChatColor.GRAY + "Grade: " + accountManager.getRank().getPrefix(), ChatColor.GRAY + "Crédits: " + ChatColor.LIGHT_PURPLE + accountManager.getCredits(), ChatColor.GRAY + "Coins: " + ChatColor.YELLOW + accountManager.getCoins(), ChatColor.GRAY + "Première connexion le " + ChatColor.RED + accountManager.getCreatedAt()};
-        new Hologram(text, player.getLocation().add(new Vector(0, 0, 3))).showPlayer(player);
+        new Hologram(text, player.getLocation().add(new Vector(0, 0, 5))).showPlayer(player);
 
-        new NPCManager().createNPC(NPC.NAVIGATEUR, player, this.instance);
+        NPCManager.execute(NPC.NAVIGATEUR);
 
         this.instance.getScheduledExecutorService().schedule(() -> {
             if (!player.isOnline()) return;
 
             player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
-            player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "--------------------------------------------");
+            player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "--------------------------------------");
 
             new FancyMessage("Hey ! En attendant viens sur le ffa ! ").color(ChatColor.YELLOW)
                     .then("[Cliquez-ici]").color(ChatColor.GREEN).style(ChatColor.BOLD).command("/join ffa")
                     .formattedTooltip(new FancyMessage("Cliquer pour rejoindre le jeu !").color(ChatColor.YELLOW))
                     .send(player);
 
-            player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "--------------------------------------------");
+            player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "--------------------------------------");
         }, 5, TimeUnit.SECONDS);
     }
 
@@ -119,9 +121,9 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event){
-        if(event.getPlayer().getLocation().getX() < 53) event.getPlayer().teleport(new Location(Bukkit.getWorlds().get(0), -0.495, 100.0, -51.429, -0.1f, -0.2f));
-
         this.instance.playerPetManager.loadCosmetic(Pets.RubiksCube, this.instance);
+
+        ActionBarAPI.sendActionBar(event.getPlayer(), ChatColor.GOLD + "" +ChatColor.BOLD + DirectionUtils.getPlayerDirection(event.getPlayer()));
     }
 
     @EventHandler
