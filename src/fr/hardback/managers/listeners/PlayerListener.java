@@ -148,6 +148,8 @@ public class PlayerListener implements Listener {
 
         if(entity.getType() == EntityType.ARMOR_STAND){
             if(entity.getCustomName().equalsIgnoreCase(NPC.NAVIGATEUR.getName())) new GuiMain(this.instance, player).display();
+        }else{
+            event.setCancelled(true);
         }
     }
 
