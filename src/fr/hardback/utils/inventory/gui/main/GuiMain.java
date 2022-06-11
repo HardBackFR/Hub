@@ -66,6 +66,7 @@ public class GuiMain extends AbstractGui {
 
     @Override
     public void onInventoryClick(InventoryClickEvent event){
+        event.setCancelled(true);
         final Player player = (Player) event.getWhoClicked();
         final Inventory inventory = event.getClickedInventory();
         final ItemStack itemStack = event.getCurrentItem();

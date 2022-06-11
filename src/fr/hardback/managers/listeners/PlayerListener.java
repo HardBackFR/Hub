@@ -4,22 +4,18 @@ import fr.hardback.Hub;
 import fr.hardback.bungee.core.rank.RankUnit;
 import fr.hardback.commons.DatabaseManager;
 import fr.hardback.commons.data.AccountData;
-import fr.hardback.spigot.tools.DirectionUtils;
-import fr.hardback.spigot.tools.actionbar.ActionBarAPI;
 import fr.hardback.spigot.tools.fancymessage.FancyMessage;
 import fr.hardback.spigot.tools.firework.CustomFirework;
 import fr.hardback.spigot.tools.hologram.Hologram;
-import fr.hardback.spigot.tools.npc.NPC;
-import fr.hardback.spigot.tools.npc.NPCManager;
+import fr.hardback.spigot.tools.npc.NPCList;
 import fr.hardback.spigot.tools.pets.PetManager;
-import fr.hardback.spigot.tools.pets.Pets;
 import fr.hardback.spigot.tools.title.TitleManager;
 import fr.hardback.utils.inventory.gui.cosmetics.GuiCosmetics;
 import fr.hardback.utils.inventory.gui.main.GuiMain;
 import fr.hardback.utils.inventory.gui.shop.GuiShop;
+import fr.hardback.utils.npc.NPCMain;
+import net.jitse.npclib.api.events.NPCInteractEvent;
 import org.bukkit.*;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -45,6 +41,7 @@ public class PlayerListener implements Listener {
         this.instance.getServer().getScheduler().runTaskAsynchronously(this.instance, () -> DatabaseManager.accountProvider.createAccount(player.getUniqueId(), player.getName()));
 
         final AccountData accountManager = DatabaseManager.REDIS.getAccountData(player.getUniqueId());
+        final RankUnit rank = accountManager.getRank();
 
         event.setJoinMessage(null);
         if(accountManager.getRank().isStaff()) {
@@ -55,12 +52,6 @@ public class PlayerListener implements Listener {
                 CustomFirework.launchFirework(player);
             }, 50, TimeUnit.MILLISECONDS);
         }
-
-        this.setNameTag(player);
-        this.instance.getScoreboardManager().onLogin(player);
-        this.instance.playerPetManager = new PetManager(event.getPlayer());
-
-        TitleManager.sendTitle(player, ChatColor.YELLOW + "HardBack", ChatColor.RED + "Actuellement en maintenance..", 20, 20, 20);
 
         for(PotionEffect potionEffect : player.getActivePotionEffects()) {
             player.removePotionEffect(potionEffect.getType());
@@ -85,10 +76,18 @@ public class PlayerListener implements Listener {
 
         this.instance.getStaticInventory().setInventoryPlayer(player);
 
+        TitleManager.sendTitle(player, ChatColor.YELLOW + "HardBack", ChatColor.RED + "Actuellement en maintenance..", 20, 20, 20);
+
         final String[] text = {ChatColor.GOLD + "" + ChatColor.BOLD + "Votre profil", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "-[--------------------]-", ChatColor.GRAY + "Grade: " + accountManager.getRank().getPrefix(), ChatColor.GRAY + "Crédits: " + ChatColor.LIGHT_PURPLE + accountManager.getCredits(), ChatColor.GRAY + "Coins: " + ChatColor.YELLOW + accountManager.getCoins(), ChatColor.GRAY + "Première connexion le " + ChatColor.RED + accountManager.getCreatedAt()};
         new Hologram(text, player.getLocation().add(new Vector(0, 0, 5))).showPlayer(player);
 
-        NPCManager.execute(NPC.NAVIGATEUR);
+        this.instance.getScoreboardManager().onLogin(player);
+        this.instance.playerPetManager = new PetManager(event.getPlayer());
+
+        this.instance.getScoreboard().getTeam(String.valueOf(rank.getPower())).addPlayer(player);
+        Bukkit.getOnlinePlayers().forEach(players -> players.setScoreboard(this.instance.getScoreboard()));
+
+        new NPCMain(this.instance, player, this.instance).execute(NPCList.NAVIGATEUR);
 
         this.instance.getScheduledExecutorService().schedule(() -> {
             if (!player.isOnline()) return;
@@ -114,16 +113,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event){
-        if(event.isCancelled()) return;
-
         event.setFormat(DatabaseManager.REDIS.getAccountData(event.getPlayer().getUniqueId()).getRank().getPrefix() + event.getPlayer().getName() + ChatColor.GRAY + " » " + ChatColor.WHITE + event.getMessage());
-    }
-
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event){
-        this.instance.playerPetManager.loadCosmetic(Pets.RubiksCube, this.instance);
-
-        ActionBarAPI.sendActionBar(event.getPlayer(), ChatColor.GOLD + "" +ChatColor.BOLD + DirectionUtils.getPlayerDirection(event.getPlayer()));
     }
 
     @EventHandler
@@ -142,31 +132,16 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onInteract(PlayerInteractAtEntityEvent event){
-        Player player = event.getPlayer();
-        Entity entity = event.getRightClicked();
-
-        if(entity.getType() == EntityType.ARMOR_STAND){
-            if(entity.getCustomName().equalsIgnoreCase(NPC.NAVIGATEUR.getName())) new GuiMain(this.instance, player).display();
-        }else{
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
     public void onInventoryClick(InventoryClickEvent event){
         final Player player = (Player) event.getWhoClicked();
-        event.setCancelled(true);
 
         new GuiMain(this.instance, player).onInventoryClick(event);
         new GuiShop(this.instance, player).onInventoryClick(event);
         new GuiCosmetics(this.instance, player).onInventoryClick(event);
     }
 
-    private void setNameTag(Player player) {
-        RankUnit rank = DatabaseManager.REDIS.getAccountData(player.getUniqueId()).getRank();
-
-        this.instance.getScoreboard().getTeam(String.valueOf(rank.getPower())).addPlayer(player);
-        Bukkit.getOnlinePlayers().forEach(players -> players.setScoreboard(this.instance.getScoreboard()));
+    @EventHandler
+    public void NPCInteractEvent(NPCInteractEvent event){
+        new NPCMain(this.instance, event.getWhoClicked(), this.instance).onNPCInteractEvent(event);
     }
 }
