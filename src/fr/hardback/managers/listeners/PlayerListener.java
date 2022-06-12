@@ -7,14 +7,11 @@ import fr.hardback.commons.data.AccountData;
 import fr.hardback.spigot.tools.fancymessage.FancyMessage;
 import fr.hardback.spigot.tools.firework.CustomFirework;
 import fr.hardback.spigot.tools.hologram.Hologram;
-import fr.hardback.spigot.tools.npc.NPCList;
 import fr.hardback.spigot.tools.pets.PetManager;
 import fr.hardback.spigot.tools.title.TitleManager;
 import fr.hardback.utils.inventory.gui.cosmetics.GuiCosmetics;
 import fr.hardback.utils.inventory.gui.main.GuiMain;
 import fr.hardback.utils.inventory.gui.shop.GuiShop;
-import fr.hardback.utils.npc.NPCMain;
-import net.jitse.npclib.api.events.NPCInteractEvent;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -87,8 +84,6 @@ public class PlayerListener implements Listener {
         this.instance.getScoreboard().getTeam(String.valueOf(rank.getPower())).addPlayer(player);
         Bukkit.getOnlinePlayers().forEach(players -> players.setScoreboard(this.instance.getScoreboard()));
 
-        new NPCMain(player, this.instance).execute(NPCList.NAVIGATEUR);
-
         this.instance.getScheduledExecutorService().schedule(() -> {
             if (!player.isOnline()) return;
 
@@ -138,10 +133,5 @@ public class PlayerListener implements Listener {
         new GuiMain(this.instance, player).onInventoryClick(event);
         new GuiShop(this.instance, player).onInventoryClick(event);
         new GuiCosmetics(this.instance, player).onInventoryClick(event);
-    }
-
-    @EventHandler
-    public void NPCInteractEvent(NPCInteractEvent event){
-        new NPCMain(event.getWhoClicked(), this.instance).onNPCInteractEvent(event);
     }
 }

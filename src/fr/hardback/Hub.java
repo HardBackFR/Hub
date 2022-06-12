@@ -7,12 +7,15 @@ import fr.hardback.spigot.tools.rank.RankUnit;
 import fr.hardback.utils.inventory.StaticInventory;
 import fr.hardback.utils.message.PluginMessaging;
 import fr.hardback.utils.scoreboard.ScoreboardManager;
+import net.jitse.npclib.NPCLib;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -32,6 +35,9 @@ public final class Hub extends JavaPlugin {
 
     public PetManager petManager;
     public PetManager playerPetManager;
+
+    public final SortedSet<String> ids = new TreeSet<>();
+    public NPCLib npclib;
 
     @Override
     public void onEnable() {
@@ -68,6 +74,8 @@ public final class Hub extends JavaPlugin {
         }
 
         this.petManager = new PetManager();
+
+        this.npclib = new NPCLib(this);
     }
 
     @Override
