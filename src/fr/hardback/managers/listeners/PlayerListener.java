@@ -13,6 +13,7 @@ import fr.hardback.utils.inventory.gui.cosmetics.GuiCosmetics;
 import fr.hardback.utils.inventory.gui.main.GuiMain;
 import fr.hardback.utils.inventory.gui.shop.GuiShop;
 import org.bukkit.*;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -133,5 +134,15 @@ public class PlayerListener implements Listener {
         new GuiMain(this.instance, player).onInventoryClick(event);
         new GuiShop(this.instance, player).onInventoryClick(event);
         new GuiCosmetics(this.instance, player).onInventoryClick(event);
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event){
+        if(event.getTo().getBlock().getRelative(BlockFace.DOWN).getType() == Material.GOLD_BLOCK){
+            Player player = event.getPlayer();
+
+            player.setVelocity(player.getLocation().getDirection().multiply(10));
+            player.setVelocity(new Vector(player.getVelocity().getX(), 1.0D, player.getVelocity().getZ()));
+        }
     }
 }
