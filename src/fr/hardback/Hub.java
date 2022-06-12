@@ -2,6 +2,7 @@ package fr.hardback;
 
 import fr.hardback.commons.DatabaseManager;
 import fr.hardback.managers.Managers;
+import fr.hardback.spigot.api.HardBackAPI;
 import fr.hardback.spigot.tools.pets.PetManager;
 import fr.hardback.spigot.tools.rank.RankUnit;
 import fr.hardback.utils.inventory.StaticInventory;
@@ -9,6 +10,7 @@ import fr.hardback.utils.message.PluginMessaging;
 import fr.hardback.utils.scoreboard.ScoreboardManager;
 import net.jitse.npclib.NPCLib;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -75,6 +77,8 @@ public final class Hub extends JavaPlugin {
     public void onDisable() {
         DatabaseManager.closeAllConnection();
         this.petManager.unloadCosmetic();
+
+        Bukkit.getOnlinePlayers().forEach(players -> players.kickPlayer(HardBackAPI.PREFIX + "\n" + ChatColor.RED + "Le serveur redémarre !"));
     }
 
     public static Hub getInstance() {
