@@ -87,7 +87,7 @@ public class PlayerListener implements Listener {
         this.instance.getScoreboard().getTeam(String.valueOf(rank.getPower())).addPlayer(player);
         Bukkit.getOnlinePlayers().forEach(players -> players.setScoreboard(this.instance.getScoreboard()));
 
-        new NPCMain(this.instance, player, this.instance).execute(NPCList.NAVIGATEUR);
+        new NPCMain(player, this.instance).execute(NPCList.NAVIGATEUR);
 
         this.instance.getScheduledExecutorService().schedule(() -> {
             if (!player.isOnline()) return;
@@ -142,6 +142,6 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void NPCInteractEvent(NPCInteractEvent event){
-        new NPCMain(this.instance, event.getWhoClicked(), this.instance).onNPCInteractEvent(event);
+        new NPCMain(event.getWhoClicked(), this.instance).onNPCInteractEvent(event);
     }
 }

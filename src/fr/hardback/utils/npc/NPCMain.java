@@ -13,24 +13,21 @@ import java.util.Arrays;
 
 public class NPCMain extends AbstractNPC {
 
-    protected final Hub instance;
-
-    public NPCMain(JavaPlugin plugin, Player player, Hub instance) {
-        super(plugin, player);
-        this.instance = instance;
+    public NPCMain(Player player, JavaPlugin plugin) {
+        super(player, plugin);
     }
 
     @Override
     public void execute(NPCList npcList) {
-        NPC npc = this.npc.createNPC(Arrays.asList(npcList.getName(), NPCList.SUB_TITLE));
+        NPC npc = this.getNpcLib().createNPC(Arrays.asList(npcList.getName(), NPCList.SUB_TITLE));
         npc.setLocation(npcList.getLocation());
         this.ids.add(npc.getId());
         npc.create();
-        npc.show(player);
+        npc.show(this.getPlayer());
     }
 
     @Override
     public void onNPCInteractEvent(NPCInteractEvent event) {
-        if(event.getNPC().getId().equals(ids.first())) new GuiMain(this.instance, event.getWhoClicked()).display();
+        if(event.getNPC().getId().equals(ids.first())) new GuiMain(Hub.getInstance(), event.getWhoClicked()).display();
     }
 }
