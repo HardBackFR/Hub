@@ -2,6 +2,7 @@ package fr.hardback.utils.npc;
 
 import fr.hardback.Hub;
 import fr.hardback.spigot.tools.npc.NPCList;
+import fr.hardback.spigot.tools.npc.NPCManager;
 import fr.hardback.utils.inventory.gui.main.GuiMain;
 import net.jitse.npclib.NPCLib;
 import net.jitse.npclib.api.events.NPCInteractEvent;
