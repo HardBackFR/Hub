@@ -1,9 +1,9 @@
 package fr.hardback.managers;
 
 import fr.hardback.Hub;
-import fr.hardback.managers.commands.CommandSpawnChest;
 import fr.hardback.managers.listeners.CancelListener;
 import fr.hardback.managers.listeners.PlayerListener;
+import fr.hardback.utils.MagicChest;
 import fr.hardback.utils.npc.NPCEvolution;
 import fr.hardback.utils.npc.NPCKillSkill;
 import fr.hardback.utils.npc.NPCMain;
@@ -28,6 +28,9 @@ public class Managers {
         pluginManager.registerEvents(new NPCEvolution(this.instance), this.instance);
         pluginManager.registerEvents(new NPCKillSkill(this.instance), this.instance);
 
-        this.instance.getCommand("spawnchest").setExecutor(new CommandSpawnChest(this.instance));
+        /*
+          MagicChest
+         */
+        pluginManager.registerEvents(new MagicChest(),this.instance);
     }
 }

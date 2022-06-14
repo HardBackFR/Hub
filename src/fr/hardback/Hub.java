@@ -3,6 +3,7 @@ package fr.hardback;
 import fr.hardback.commons.DatabaseManager;
 import fr.hardback.managers.Managers;
 import fr.hardback.spigot.api.HardBackAPI;
+import fr.hardback.spigot.tools.npc.NPCManager;
 import fr.hardback.spigot.tools.pets.PetManager;
 import fr.hardback.spigot.tools.rank.RankUnit;
 import fr.hardback.utils.inventory.StaticInventory;
@@ -33,8 +34,8 @@ public final class Hub extends JavaPlugin {
     private Scoreboard scoreboard;
     private ScoreboardManager scoreboardManager;
 
-    public PetManager petManager;
-    public PetManager playerPetManager;
+    private NPCManager npcManager;
+    private PetManager petManager;
 
     @Override
     public void onEnable() {
@@ -76,9 +77,7 @@ public final class Hub extends JavaPlugin {
     @Override
     public void onDisable() {
         DatabaseManager.closeAllConnection();
-        this.petManager.unloadCosmetic();
-
-        Bukkit.getOnlinePlayers().forEach(players -> players.kickPlayer(HardBackAPI.PREFIX + "\n" + ChatColor.RED + "Le serveur redémarre !"));
+        Bukkit.getOnlinePlayers().forEach(players -> players.kickPlayer(null));
     }
 
     public static Hub getInstance() {
@@ -109,7 +108,11 @@ public final class Hub extends JavaPlugin {
         return scoreboardManager;
     }
 
-    public PetManager getPlayerPetManager() {
-        return playerPetManager;
+    public NPCManager getNPCManager() {
+        return npcManager;
+    }
+
+    public PetManager getPetManager() {
+        return petManager;
     }
 }

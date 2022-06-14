@@ -38,7 +38,7 @@ public class NPCEvolution implements Listener {
 
     @EventHandler
     public void onLogin(PlayerJoinEvent event) {
-        NPCManager.setup(this.npcLib, NPCList.EVOLUTION, event.getPlayer());
+        this.instance.getNPCManager().setup(this.npcLib, NPCList.EVOLUTION, event.getPlayer());
     }
 }
 

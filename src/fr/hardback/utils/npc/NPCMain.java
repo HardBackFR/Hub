@@ -1,6 +1,7 @@
 package fr.hardback.utils.npc;
 
 import fr.hardback.Hub;
+import fr.hardback.spigot.api.HardBackAPI;
 import fr.hardback.spigot.tools.npc.NPCList;
 import fr.hardback.spigot.tools.npc.NPCManager;
 import fr.hardback.utils.inventory.gui.main.GuiMain;
@@ -31,7 +32,7 @@ public class NPCMain implements Listener {
 
     @EventHandler
     public void onLogin(PlayerJoinEvent event) {
-        NPCManager.setup(this.npcLib, NPCList.NAVIGATEUR, event.getPlayer());
+        this.instance.getNPCManager().setup(this.npcLib, NPCList.NAVIGATEUR, event.getPlayer());
     }
 }
 

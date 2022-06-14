@@ -8,7 +8,9 @@ import fr.hardback.spigot.tools.fancymessage.FancyMessage;
 import fr.hardback.spigot.tools.firework.CustomFirework;
 import fr.hardback.spigot.tools.hologram.Hologram;
 import fr.hardback.spigot.tools.pets.PetManager;
+import fr.hardback.spigot.tools.pets.Pets;
 import fr.hardback.spigot.tools.title.TitleManager;
+import fr.hardback.utils.MagicChest;
 import fr.hardback.utils.inventory.gui.cosmetics.GuiCosmetics;
 import fr.hardback.utils.inventory.gui.main.GuiMain;
 import fr.hardback.utils.inventory.gui.shop.GuiShop;
@@ -40,6 +42,8 @@ public class PlayerListener implements Listener {
 
         final AccountData accountManager = DatabaseManager.REDIS.getAccountData(player.getUniqueId());
         final RankUnit rank = accountManager.getRank();
+
+        this.instance.getPetManager().execute(player, Pets.Turtle);
 
         event.setJoinMessage(null);
         if(accountManager.getRank().isStaff()) {
@@ -80,10 +84,11 @@ public class PlayerListener implements Listener {
         new Hologram(text, player.getLocation().add(new Vector(0, 0, 5))).showPlayer(player);
 
         this.instance.getScoreboardManager().onLogin(player);
-        this.instance.playerPetManager = new PetManager(event.getPlayer());
 
         this.instance.getScoreboard().getTeam(String.valueOf(rank.getPower())).addPlayer(player);
         Bukkit.getOnlinePlayers().forEach(players -> players.setScoreboard(this.instance.getScoreboard()));
+
+        MagicChest.load(player);
 
         this.instance.getScheduledExecutorService().schedule(() -> {
             if (!player.isOnline()) return;
@@ -104,7 +109,7 @@ public class PlayerListener implements Listener {
     public void onLogout(PlayerQuitEvent event){
         event.setQuitMessage(null);
         this.instance.getScoreboardManager().onLogout(event.getPlayer());
-        this.instance.petManager.unloadCosmetic();
+        this.instance.getPetManager().remove(event.getPlayer());
     }
 
     @EventHandler
@@ -144,5 +149,7 @@ public class PlayerListener implements Listener {
             player.setVelocity(player.getLocation().getDirection().multiply(10));
             player.setVelocity(new Vector(player.getVelocity().getX(), 1.0D, player.getVelocity().getZ()));
         }
+
+        this.instance.getPetManager().remove(event.getPlayer());
     }
 }
