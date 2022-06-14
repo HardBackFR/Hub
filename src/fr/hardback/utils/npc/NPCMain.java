@@ -32,7 +32,7 @@ public class NPCMain implements Listener {
 
     @EventHandler
     public void onLogin(PlayerJoinEvent event) {
-        this.instance.getNPCManager().setup(this.npcLib, NPCList.NAVIGATEUR, event.getPlayer());
+        NPCManager.setup(this.npcLib, NPCList.NAVIGATEUR, event.getPlayer());
     }
 }
 

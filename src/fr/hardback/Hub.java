@@ -71,7 +71,7 @@ public final class Hub extends JavaPlugin {
             this.scoreboard.getTeam(String.valueOf(ranks.getPower())).setPrefix(ranks.getPrefix());
         }
 
-        this.petManager = new PetManager();
+        this.petManager = new PetManager(this);
     }
 
     @Override

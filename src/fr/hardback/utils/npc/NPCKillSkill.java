@@ -38,7 +38,7 @@ public class NPCKillSkill implements Listener {
 
     @EventHandler
     public void onLogin(PlayerJoinEvent event) {
-        this.instance.getNPCManager().setup(this.npcLib, NPCList.KILLSKILL, event.getPlayer());
+        NPCManager.setup(this.npcLib, NPCList.KILLSKILL, event.getPlayer());
     }
 }
 
