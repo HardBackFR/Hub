@@ -25,8 +25,8 @@ public class Managers {
           NPCs
          */
         pluginManager.registerEvents(new NPCMain(this.instance), this.instance);
-        pluginManager.registerEvents(new NPCEvolution(this.instance), this.instance);
-        pluginManager.registerEvents(new NPCKillSkill(this.instance), this.instance);
+        pluginManager.registerEvents(new NPCEvolution(), this.instance);
+        pluginManager.registerEvents(new NPCKillSkill(), this.instance);
 
         /*
           MagicChest

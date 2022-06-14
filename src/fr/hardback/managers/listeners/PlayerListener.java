@@ -7,8 +7,8 @@ import fr.hardback.commons.data.AccountData;
 import fr.hardback.spigot.tools.fancymessage.FancyMessage;
 import fr.hardback.spigot.tools.firework.CustomFirework;
 import fr.hardback.spigot.tools.hologram.Hologram;
-import fr.hardback.spigot.tools.pets.PetManager;
 import fr.hardback.spigot.tools.pets.Pets;
+import fr.hardback.spigot.tools.pets.PetsManager;
 import fr.hardback.spigot.tools.title.TitleManager;
 import fr.hardback.utils.MagicChest;
 import fr.hardback.utils.inventory.gui.cosmetics.GuiCosmetics;
@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 public class PlayerListener implements Listener {
 
     protected final Hub instance;
+    protected PetsManager petsManager;
 
     public PlayerListener(Hub instance) {
         this.instance = instance;
@@ -42,8 +43,6 @@ public class PlayerListener implements Listener {
 
         final AccountData accountManager = DatabaseManager.REDIS.getAccountData(player.getUniqueId());
         final RankUnit rank = accountManager.getRank();
-
-        this.instance.getPetManager().execute(player, Pets.Turtle);
 
         event.setJoinMessage(null);
         if(accountManager.getRank().isStaff()) {
@@ -90,6 +89,8 @@ public class PlayerListener implements Listener {
 
         MagicChest.load(player);
 
+        this.petsManager = new PetsManager(player, Pets.RubiksCube);
+
         this.instance.getScheduledExecutorService().schedule(() -> {
             if (!player.isOnline()) return;
 
@@ -109,7 +110,6 @@ public class PlayerListener implements Listener {
     public void onLogout(PlayerQuitEvent event){
         event.setQuitMessage(null);
         this.instance.getScoreboardManager().onLogout(event.getPlayer());
-        this.instance.getPetManager().remove(event.getPlayer());
     }
 
     @EventHandler
@@ -150,6 +150,11 @@ public class PlayerListener implements Listener {
             player.setVelocity(new Vector(player.getVelocity().getX(), 1.0D, player.getVelocity().getZ()));
         }
 
-        this.instance.getPetManager().remove(event.getPlayer());
+        this.petsManager.tp(event);
+    }
+
+    @EventHandler
+    public void onDestroy(PlayerInteractAtEntityEvent event){
+        this.petsManager.destroy(event);
     }
 }

@@ -21,8 +21,6 @@ public class NPCMain implements Listener {
     public NPCMain(Hub instance) {
         this.instance = instance;
         this.npcLib = new NPCLib(this.instance);
-
-        Bukkit.getPluginManager().registerEvents(this, this.instance);
     }
 
     @EventHandler

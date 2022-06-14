@@ -27,6 +27,9 @@ public class MagicChest implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event){
+        event.setCancelled(true);
+        if(event.getItem() == null)return;
+
         if(event.getClickedBlock().getType() == Material.CHEST) event.getPlayer().sendMessage(ChatColor.RED + "Coffre magique en développent =)");
     }
 }

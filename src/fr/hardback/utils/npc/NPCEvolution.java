@@ -20,15 +20,10 @@ import java.util.TreeSet;
 
 public class NPCEvolution implements Listener {
 
-    private final Hub instance;
-
     private final NPCLib npcLib;
 
-    public NPCEvolution(Hub instance) {
-        this.instance = instance;
-        this.npcLib = new NPCLib(this.instance);
-
-        Bukkit.getPluginManager().registerEvents(this, this.instance);
+    public NPCEvolution() {
+        this.npcLib = new NPCLib(Hub.getInstance());
     }
 
     @EventHandler
