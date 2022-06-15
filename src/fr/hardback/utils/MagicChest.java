@@ -13,7 +13,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 
-public class MagicChest implements Listener {
+public class MagicChest{
 
     public static void load(Player player){
         Location location = new Location(Bukkit.getWorld("world"), -0.516, 100.0, -12.592);
@@ -25,8 +25,7 @@ public class MagicChest implements Listener {
         new Hologram(text, location.add(new Vector(0, -0.5, 0))).showPlayer(player);
     }
 
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event){
+    public static void onInteract(PlayerInteractEvent event){
         event.setCancelled(true);
         if(event.getItem() == null)return;
 

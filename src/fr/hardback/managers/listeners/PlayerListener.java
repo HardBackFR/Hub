@@ -29,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 public class PlayerListener implements Listener {
 
     protected final Hub instance;
-    protected PetsManager petsManager;
 
     public PlayerListener(Hub instance) {
         this.instance = instance;
@@ -89,8 +88,6 @@ public class PlayerListener implements Listener {
 
         MagicChest.load(player);
 
-        this.petsManager = new PetsManager(player, Pets.RubiksCube);
-
         this.instance.getScheduledExecutorService().schedule(() -> {
             if (!player.isOnline()) return;
 
@@ -126,6 +123,8 @@ public class PlayerListener implements Listener {
 
         this.instance.getServer().getScheduler().runTaskAsynchronously(this.instance, () -> this.instance.getStaticInventory().doInteraction(player, event.getItem()));
 
+        MagicChest.onInteract(event);
+
         if(event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "Firework")) {
             CustomFirework.launchFirework(player);
             player.getInventory().remove(player.getInventory().getItemInHand());
@@ -143,18 +142,20 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event){
+        if(!GuiCosmetics.petsManager.pet.containsKey(event.getPlayer().getUniqueId())) return;
+
         if(event.getTo().getBlock().getRelative(BlockFace.DOWN).getType() == Material.GOLD_BLOCK){
             Player player = event.getPlayer();
 
             player.setVelocity(player.getLocation().getDirection().multiply(10));
             player.setVelocity(new Vector(player.getVelocity().getX(), 1.0D, player.getVelocity().getZ()));
         }
-
-        this.petsManager.tp(event);
+        GuiCosmetics.petsManager.tp(event);
     }
 
     @EventHandler
     public void onDestroy(PlayerInteractAtEntityEvent event){
-        this.petsManager.destroy(event);
+        if(!GuiCosmetics.petsManager.pet.containsKey(event.getPlayer().getUniqueId())) return;
+        GuiCosmetics.petsManager.destroy(event);
     }
 }
