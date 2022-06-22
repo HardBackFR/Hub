@@ -6,11 +6,9 @@ import fr.hardback.commons.DatabaseManager;
 import fr.hardback.commons.data.AccountData;
 import fr.hardback.spigot.tools.fancymessage.FancyMessage;
 import fr.hardback.spigot.tools.firework.CustomFirework;
-import fr.hardback.spigot.tools.hologram.Hologram;
-import fr.hardback.spigot.tools.pets.Pets;
+import fr.hardback.spigot.tools.hologram.HologramManager;
 import fr.hardback.spigot.tools.pets.PetsManager;
 import fr.hardback.spigot.tools.title.TitleManager;
-import fr.hardback.utils.MagicChest;
 import fr.hardback.utils.inventory.gui.cosmetics.GuiCosmetics;
 import fr.hardback.utils.inventory.gui.main.GuiMain;
 import fr.hardback.utils.inventory.gui.shop.GuiShop;
@@ -24,6 +22,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class PlayerListener implements Listener {
@@ -42,6 +41,8 @@ public class PlayerListener implements Listener {
 
         final AccountData accountManager = DatabaseManager.REDIS.getAccountData(player.getUniqueId());
         final RankUnit rank = accountManager.getRank();
+
+        GuiCosmetics.petsManager = new PetsManager(player);
 
         event.setJoinMessage(null);
         if(accountManager.getRank().isStaff()) {
@@ -76,17 +77,15 @@ public class PlayerListener implements Listener {
 
         this.instance.getStaticInventory().setInventoryPlayer(player);
 
-        TitleManager.sendTitle(player, ChatColor.YELLOW + "HardBack", ChatColor.RED + "Actuellement en maintenance..", 20, 20, 20);
-
-        final String[] text = {ChatColor.GOLD + "" + ChatColor.BOLD + "Votre profil", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "-[--------------------]-", ChatColor.GRAY + "Grade: " + accountManager.getRank().getPrefix(), ChatColor.GRAY + "Crédits: " + ChatColor.LIGHT_PURPLE + accountManager.getCredits(), ChatColor.GRAY + "Coins: " + ChatColor.YELLOW + accountManager.getCoins(), ChatColor.GRAY + "Première connexion le " + ChatColor.RED + accountManager.getCreatedAt()};
-        new Hologram(text, player.getLocation().add(new Vector(0, 0, 5))).showPlayer(player);
+        TitleManager.send(player, ChatColor.YELLOW + "HardBack", ChatColor.RED + "Actuellement en maintenance..", 20, 20, 20);
+        HologramManager.send(player.getLocation().add(new Vector(0, 0, 5)), Arrays.asList(ChatColor.GOLD + "" + ChatColor.BOLD + "Votre profil", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "-[--------------------]-", ChatColor.GRAY + "Grade: " + accountManager.getRank().getPrefix(), ChatColor.GRAY + "Crédits: " + ChatColor.LIGHT_PURPLE + accountManager.getCredits(), ChatColor.GRAY + "Coins: " + ChatColor.YELLOW + accountManager.getCoins(), ChatColor.GRAY + "Première connexion le " + ChatColor.RED + accountManager.getCreatedAt()));
 
         this.instance.getScoreboardManager().onLogin(player);
 
         this.instance.getScoreboard().getTeam(String.valueOf(rank.getPower())).addPlayer(player);
         Bukkit.getOnlinePlayers().forEach(players -> players.setScoreboard(this.instance.getScoreboard()));
 
-        MagicChest.load(player);
+        //MagicChest.load(player);
 
         this.instance.getScheduledExecutorService().schedule(() -> {
             if (!player.isOnline()) return;
@@ -123,7 +122,7 @@ public class PlayerListener implements Listener {
 
         this.instance.getServer().getScheduler().runTaskAsynchronously(this.instance, () -> this.instance.getStaticInventory().doInteraction(player, event.getItem()));
 
-        MagicChest.onInteract(event);
+        //MagicChest.onInteract(event);
 
         if(event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.RED + "Firework")) {
             CustomFirework.launchFirework(player);
@@ -142,8 +141,6 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event){
-        if(!GuiCosmetics.petsManager.pet.containsKey(event.getPlayer().getUniqueId())) return;
-
         if(event.getTo().getBlock().getRelative(BlockFace.DOWN).getType() == Material.GOLD_BLOCK){
             Player player = event.getPlayer();
 
@@ -155,7 +152,6 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onDestroy(PlayerInteractAtEntityEvent event){
-        if(!GuiCosmetics.petsManager.pet.containsKey(event.getPlayer().getUniqueId())) return;
         GuiCosmetics.petsManager.destroy(event);
     }
 }

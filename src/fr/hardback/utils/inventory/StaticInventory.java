@@ -38,18 +38,6 @@ public class StaticInventory {
             case COMPASS:
                 new GuiMain(this.instance, player).display();
                 break;
-            case SKULL_ITEM:
-                AccountData account = DatabaseManager.REDIS.getAccountData(player.getUniqueId());
-                player.sendMessage(" ");
-                player.sendMessage(ChatColor.GRAY + "» " + ChatColor.YELLOW + "" + ChatColor.BOLD + "Informations" + ChatColor.WHITE + "" + ChatColor.BOLD + " | " + ChatColor.YELLOW + "" + ChatColor.BOLD + "Profil");
-                player.sendMessage(" ");
-                player.sendMessage(ChatColor.DARK_GRAY + "⯀ " + ChatColor.GOLD + "Grade" + ChatColor.GRAY + " » " + ChatColor.WHITE + account.getRank().getPrefix());
-                player.sendMessage(ChatColor.DARK_GRAY + "⯀ " + ChatColor.GOLD + "Crédits" + ChatColor.GRAY + " » " + ChatColor.WHITE +  account.getCredits());
-                player.sendMessage(ChatColor.DARK_GRAY + "⯀ " + ChatColor.GOLD + "Coins" + ChatColor.GRAY + " » " + ChatColor.WHITE + account.getCoins());
-                player.sendMessage(ChatColor.DARK_GRAY + "⯀ " + ChatColor.GOLD + "Compté crée le" + ChatColor.GRAY + " » " + ChatColor.WHITE +  account.getCreatedAt());
-                player.sendMessage(ChatColor.DARK_GRAY + "⯀ " + ChatColor.GOLD + "Lobby" + ChatColor.GRAY + " » " + ChatColor.WHITE + "#1");
-                player.sendMessage(" ");
-                break;
             case GOLD_INGOT:
                 new GuiShop(this.instance, player).display();
                 break;
@@ -57,6 +45,19 @@ public class StaticInventory {
                 new GuiCosmetics(this.instance, player).display();
                 break;
             default:break;
+        }
+
+        if(itemStack.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GOLD + "" + ChatColor.BOLD + "Profil" + ChatColor.RESET + "" + ChatColor.GRAY + " (Clic-droit)")){
+            AccountData account = DatabaseManager.REDIS.getAccountData(player.getUniqueId());
+            player.sendMessage(" ");
+            player.sendMessage(ChatColor.GRAY + "» " + ChatColor.YELLOW + "" + ChatColor.BOLD + "Informations" + ChatColor.WHITE + "" + ChatColor.BOLD + " | " + ChatColor.YELLOW + "" + ChatColor.BOLD + "Profil");
+            player.sendMessage(" ");
+            player.sendMessage(ChatColor.DARK_GRAY + "⯀ " + ChatColor.GOLD + "Grade" + ChatColor.GRAY + " » " + ChatColor.WHITE + account.getRank().getPrefix());
+            player.sendMessage(ChatColor.DARK_GRAY + "⯀ " + ChatColor.GOLD + "Crédits" + ChatColor.GRAY + " » " + ChatColor.WHITE +  account.getCredits());
+            player.sendMessage(ChatColor.DARK_GRAY + "⯀ " + ChatColor.GOLD + "Coins" + ChatColor.GRAY + " » " + ChatColor.WHITE + account.getCoins());
+            player.sendMessage(ChatColor.DARK_GRAY + "⯀ " + ChatColor.GOLD + "Compté crée le" + ChatColor.GRAY + " » " + ChatColor.WHITE +  account.getCreatedAt());
+            player.sendMessage(ChatColor.DARK_GRAY + "⯀ " + ChatColor.GOLD + "Lobby" + ChatColor.GRAY + " » " + ChatColor.WHITE + "#1");
+            player.sendMessage(" ");
         }
     }
 

@@ -1,17 +1,16 @@
 package fr.hardback.utils;
 
-import fr.hardback.spigot.tools.hologram.Hologram;
+import fr.hardback.spigot.tools.hologram.HologramManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
+
+import java.util.Arrays;
 
 public class MagicChest{
 
@@ -21,14 +20,10 @@ public class MagicChest{
         Block block = new Location(location.getWorld(), location.getX(), location.getY(), location.getZ()).getBlock();
         block.setType(Material.CHEST);
 
-        final String[] text = {ChatColor.DARK_PURPLE + "Coffre Magique"};
-        new Hologram(text, location.add(new Vector(0, -0.5, 0))).showPlayer(player);
+        HologramManager.send(location.add(new Vector(0, -0.5, 0)), Arrays.asList(ChatColor.DARK_PURPLE + "Coffre Magique"));
     }
 
     public static void onInteract(PlayerInteractEvent event){
-        event.setCancelled(true);
-        if(event.getItem() == null)return;
-
         if(event.getClickedBlock().getType() == Material.CHEST) event.getPlayer().sendMessage(ChatColor.RED + "Coffre magique en développent =)");
     }
 }

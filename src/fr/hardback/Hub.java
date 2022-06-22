@@ -2,6 +2,8 @@ package fr.hardback;
 
 import fr.hardback.commons.DatabaseManager;
 import fr.hardback.managers.Managers;
+import fr.hardback.spigot.api.HardBackAPI;
+import fr.hardback.spigot.tools.pets.PetsManager;
 import fr.hardback.spigot.tools.rank.RankUnit;
 import fr.hardback.utils.inventory.StaticInventory;
 import fr.hardback.utils.message.PluginMessaging;
