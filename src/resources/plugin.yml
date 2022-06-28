@@ -3,4 +3,5 @@ version: "1.0"
 author: KIZAFOX
 main: fr.hardback.Hub
 description: HardBack Hub
+api-version: 1.18
 website: https://twitter.fr/KIZAFOX
