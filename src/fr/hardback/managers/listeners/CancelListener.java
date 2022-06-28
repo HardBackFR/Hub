@@ -5,7 +5,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.player.PlayerAchievementAwardedEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
@@ -18,13 +17,17 @@ public class CancelListener implements Listener {
     }
 
     @EventHandler
-    public void onFoodLevelChange(FoodLevelChangeEvent event){ event.setCancelled(true); }
+    public void onFoodLevelChange(FoodLevelChangeEvent event) {
+        event.setCancelled(true);
+    }
 
     @EventHandler
-    public void onPlayerDropItem(PlayerDropItemEvent event){ event.setCancelled(true); }
+    public void onPlayerDropItem(PlayerDropItemEvent event) {
+        event.setCancelled(true);
+    }
 
     @EventHandler
-    public void onEntityDamage(EntityDamageEvent event){
+    public void onEntityDamage(EntityDamageEvent event) {
         event.setCancelled(true);
         event.setCancelled(!event.getEntity().getType().equals(EntityType.PLAYER));
         event.setCancelled(event.getCause().equals(EntityDamageEvent.DamageCause.FALL));
@@ -36,12 +39,12 @@ public class CancelListener implements Listener {
     }
 
     @EventHandler
-    public void onEntityExplode(EntityExplodeEvent event){ event.setCancelled(true); }
+    public void onEntityExplode(EntityExplodeEvent event) {
+        event.setCancelled(true);
+    }
 
     @EventHandler
-    public void onFlow(EntityChangeBlockEvent event){ event.setCancelled(true); }
-
-    @EventHandler
-    public void onAchievement(PlayerAchievementAwardedEvent event){ event.setCancelled(true); }
-
+    public void onFlow(EntityChangeBlockEvent event) {
+        event.setCancelled(true);
+    }
 }

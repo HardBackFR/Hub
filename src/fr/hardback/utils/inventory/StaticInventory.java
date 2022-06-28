@@ -3,7 +3,6 @@ package fr.hardback.utils.inventory;
 import fr.hardback.Hub;
 import fr.hardback.commons.DatabaseManager;
 import fr.hardback.commons.data.AccountData;
-import fr.hardback.spigot.tools.firework.CustomFirework;
 import fr.hardback.spigot.tools.item.ItemBuilder;
 import fr.hardback.utils.inventory.gui.cosmetics.GuiCosmetics;
 import fr.hardback.utils.inventory.gui.main.GuiMain;
@@ -16,6 +15,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 public class StaticInventory {
@@ -28,26 +28,21 @@ public class StaticInventory {
 
         this.items = new HashMap<>();
         this.items.put(0, new ItemBuilder(Material.COMPASS).setName(createTitle("Navigation")).toItemStack());
-        this.items.put(1, new ItemBuilder(Material.SKULL_ITEM, 1, (byte) 3).setName(createTitle("Profil")).toItemStack());
+        this.items.put(1, new ItemBuilder(Material.LEGACY_SKULL_ITEM, 1, (byte) 3).setName(createTitle("Profil")).toItemStack());
         this.items.put(4, new ItemBuilder(Material.GOLD_INGOT).setName(createTitle("Boutique")).toItemStack());
-        this.items.put(8, new ItemBuilder(Material.ENDER_CHEST).setName(randomColors("Cosmétiques") + ChatColor.GRAY + " (Clic-droit)").toItemStack());
+        this.items.put(8, new ItemBuilder(Material.ENDER_CHEST).setName(randomColors() + ChatColor.GRAY + " (Clic-droit)").toItemStack());
     }
 
     public void doInteraction(Player player, ItemStack itemStack){
-        switch (itemStack.getType()){
-            case COMPASS:
-                new GuiMain(this.instance, player).display();
-                break;
-            case GOLD_INGOT:
-                new GuiShop(this.instance, player).display();
-                break;
-            case ENDER_CHEST:
-                new GuiCosmetics(this.instance, player).display();
-                break;
-            default:break;
+        switch (itemStack.getType()) {
+            case COMPASS -> new GuiMain(this.instance, player).display();
+            case GOLD_INGOT -> new GuiShop(this.instance, player).display();
+            case ENDER_CHEST -> new GuiCosmetics(this.instance, player).display();
+            default -> {
+            }
         }
 
-        if(itemStack.getItemMeta().getDisplayName().equalsIgnoreCase(ChatColor.GOLD + "" + ChatColor.BOLD + "Profil" + ChatColor.RESET + "" + ChatColor.GRAY + " (Clic-droit)")){
+        if(Objects.requireNonNull(itemStack.getItemMeta()).getDisplayName().equalsIgnoreCase(ChatColor.GOLD + "" + ChatColor.BOLD + "Profil" + ChatColor.RESET + "" + ChatColor.GRAY + " (Clic-droit)")){
             AccountData account = DatabaseManager.REDIS.getAccountData(player.getUniqueId());
             player.sendMessage(" ");
             player.sendMessage(ChatColor.GRAY + "» " + ChatColor.YELLOW + "" + ChatColor.BOLD + "Informations" + ChatColor.WHITE + "" + ChatColor.BOLD + " | " + ChatColor.YELLOW + "" + ChatColor.BOLD + "Profil");
@@ -63,9 +58,9 @@ public class StaticInventory {
 
     public void setInventoryPlayer(Player player){
         for(int slots : this.items.keySet()){
-            if(this.items.get(slots).getType() == Material.SKULL_ITEM){
+            if(this.items.get(slots).getType() == Material.LEGACY_SKULL_ITEM){
                 SkullMeta meta = (SkullMeta) this.items.get(slots).getItemMeta();
-                meta.setOwner(player.getName());
+                Objects.requireNonNull(meta).setOwner(player.getName());
 
                 this.items.get(slots).setItemMeta(meta);
             }
@@ -78,11 +73,11 @@ public class StaticInventory {
         return ChatColor.GOLD + "" + ChatColor.BOLD + text + ChatColor.RESET + "" + ChatColor.GRAY + " (Clic-droit)";
     }
 
-    private String randomColors(String name){
+    private String randomColors(){
         StringBuilder stringBuilder = new StringBuilder();
         Random random = new Random();
 
-        for(Character characters : name.toCharArray()){
+        for(Character characters : "Cosmétiques".toCharArray()){
             stringBuilder.append(ChatColor.getByChar(Integer.toHexString(random.nextInt(16))));
             stringBuilder.append(characters);
         }

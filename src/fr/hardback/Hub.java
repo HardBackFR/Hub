@@ -2,18 +2,20 @@ package fr.hardback;
 
 import fr.hardback.commons.DatabaseManager;
 import fr.hardback.managers.Managers;
-import fr.hardback.spigot.api.HardBackAPI;
-import fr.hardback.spigot.tools.pets.PetsManager;
 import fr.hardback.spigot.tools.rank.RankUnit;
 import fr.hardback.utils.inventory.StaticInventory;
 import fr.hardback.utils.message.PluginMessaging;
-import fr.hardback.utils.scoreboard.ScoreboardManager;
+import fr.hardback.utils.scoreboard.FastBoard;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -29,7 +31,8 @@ public final class Hub extends JavaPlugin {
     private ScheduledExecutorService scheduledExecutorService;
 
     private Scoreboard scoreboard;
-    private ScoreboardManager scoreboardManager;
+
+    public static final Map<UUID, FastBoard> boards = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -42,6 +45,7 @@ public final class Hub extends JavaPlugin {
         this.world = this.getServer().getWorlds().get(0);
         this.world.setGameRuleValue("randomTickSpeed", "0");
         this.world.setGameRuleValue("doDaylightCycle", "false");
+        this.world.setGameRuleValue("announceAdvancements", "false");
         this.world.setWeatherDuration(0);
         this.world.setDifficulty(Difficulty.PEACEFUL);
         this.world.setPVP(false);
@@ -53,12 +57,17 @@ public final class Hub extends JavaPlugin {
         this.executorMonoThread = Executors.newScheduledThreadPool(1);
 
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        this.scoreboardManager = new ScoreboardManager();
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new PluginMessaging());
 
         new Managers(this);
+
+        this.getServer().getScheduler().runTaskTimer(this, () -> {
+            for(FastBoard board : boards.values()){
+                this.updateBoard(board);
+            }
+        }, 0, 20);
 
         for(RankUnit ranks : RankUnit.values()){
             this.scoreboard.registerNewTeam(String.valueOf(ranks.getPower()));
@@ -96,7 +105,24 @@ public final class Hub extends JavaPlugin {
         return scoreboard;
     }
 
-    public ScoreboardManager getScoreboardManager() {
-        return scoreboardManager;
+    private void updateBoard(FastBoard board) {
+        PluginMessaging.requestCount("ALL", board.getPlayer());
+
+        board.updateLines(
+                "",
+                ChatColor.GOLD + "► Informations",
+                ChatColor.YELLOW + "• Compte: " + ChatColor.WHITE + board.getPlayer().getName(),
+                ChatColor.YELLOW + "• Grade: " + DatabaseManager.REDIS.getAccountData(board.getPlayer().getUniqueId()).getRank().getPrefix(),
+                "",
+                ChatColor.YELLOW + "• Crédits: " + ChatColor.WHITE + DatabaseManager.REDIS.getAccountData(board.getPlayer().getUniqueId()).getCredits(),
+                ChatColor.YELLOW + "• Coins: " + ChatColor.WHITE + DatabaseManager.REDIS.getAccountData(board.getPlayer().getUniqueId()).getCoins(),
+                "",
+                ChatColor.GOLD + "► Informations serveur",
+                ChatColor.YELLOW + "• Lobby: " + ChatColor.WHITE + "#1",
+                ChatColor.YELLOW + "• Joueurs: " + ChatColor.WHITE + PluginMessaging.getPlayerCount("ALL"),
+                "",
+                ChatColor.GOLD + "" + ChatColor.BOLD +"play.hardback.fr"
+        );
     }
+
 }

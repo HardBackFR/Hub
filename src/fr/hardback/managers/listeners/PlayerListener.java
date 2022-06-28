@@ -12,6 +12,7 @@ import fr.hardback.spigot.tools.title.TitleManager;
 import fr.hardback.utils.inventory.gui.cosmetics.GuiCosmetics;
 import fr.hardback.utils.inventory.gui.main.GuiMain;
 import fr.hardback.utils.inventory.gui.shop.GuiShop;
+import fr.hardback.utils.scoreboard.FastBoard;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -23,6 +24,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class PlayerListener implements Listener {
@@ -36,6 +38,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onLogin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
+        final FastBoard board = new FastBoard(player);
 
         this.instance.getServer().getScheduler().runTaskAsynchronously(this.instance, () -> DatabaseManager.accountProvider.createAccount(player.getUniqueId(), player.getName()));
 
@@ -80,9 +83,10 @@ public class PlayerListener implements Listener {
         TitleManager.send(player, ChatColor.YELLOW + "HardBack", ChatColor.RED + "Actuellement en maintenance..", 20, 20, 20);
         HologramManager.send(player.getLocation().add(new Vector(0, 0, 5)), Arrays.asList(ChatColor.GOLD + "" + ChatColor.BOLD + "Votre profil", ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "-[--------------------]-", ChatColor.GRAY + "Grade: " + accountManager.getRank().getPrefix(), ChatColor.GRAY + "Crédits: " + ChatColor.LIGHT_PURPLE + accountManager.getCredits(), ChatColor.GRAY + "Coins: " + ChatColor.YELLOW + accountManager.getCoins(), ChatColor.GRAY + "Première connexion le " + ChatColor.RED + accountManager.getCreatedAt()));
 
-        this.instance.getScoreboardManager().onLogin(player);
+        board.updateTitle(ChatColor.YELLOW + "" + ChatColor.BOLD + "HARDBACK");
+        Hub.boards.put(player.getUniqueId(), board);
 
-        this.instance.getScoreboard().getTeam(String.valueOf(rank.getPower())).addPlayer(player);
+        Objects.requireNonNull(this.instance.getScoreboard().getTeam(String.valueOf(rank.getPower()))).addPlayer(player);
         Bukkit.getOnlinePlayers().forEach(players -> players.setScoreboard(this.instance.getScoreboard()));
 
         //MagicChest.load(player);
@@ -90,7 +94,7 @@ public class PlayerListener implements Listener {
         this.instance.getScheduledExecutorService().schedule(() -> {
             if (!player.isOnline()) return;
 
-            player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F);
             player.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "--------------------------------------");
 
             new FancyMessage("Hey ! En attendant viens sur le ffa ! ").color(ChatColor.YELLOW)
@@ -105,7 +109,12 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onLogout(PlayerQuitEvent event){
         event.setQuitMessage(null);
-        this.instance.getScoreboardManager().onLogout(event.getPlayer());
+
+        FastBoard board = Hub.boards.remove(event.getPlayer().getUniqueId());
+
+        if (board != null) {
+            board.delete();
+        }
     }
 
     @EventHandler

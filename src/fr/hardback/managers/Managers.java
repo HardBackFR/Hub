@@ -3,9 +3,6 @@ package fr.hardback.managers;
 import fr.hardback.Hub;
 import fr.hardback.managers.listeners.CancelListener;
 import fr.hardback.managers.listeners.PlayerListener;
-import fr.hardback.utils.npc.NPCEvolution;
-import fr.hardback.utils.npc.NPCKillSkill;
-import fr.hardback.utils.npc.NPCMain;
 import org.bukkit.plugin.PluginManager;
 
 public class Managers {
@@ -22,9 +19,9 @@ public class Managers {
 
         /*
           NPCs
-         */
         pluginManager.registerEvents(new NPCMain(this.instance), this.instance);
         pluginManager.registerEvents(new NPCEvolution(this.instance), this.instance);
         pluginManager.registerEvents(new NPCKillSkill(this.instance), this.instance);
+         */
     }
 }

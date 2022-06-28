@@ -42,12 +42,11 @@ public class GuiShop extends AbstractGui {
     @Override
     public void onInventoryClick(InventoryClickEvent event){
         Player player = (Player) event.getWhoClicked();
-        Inventory inventory = event.getClickedInventory();
         ItemStack itemStack = event.getCurrentItem();
 
-        if(itemStack == null || itemStack.getType() == null || itemStack.getItemMeta() == null) return;
+        if(itemStack == null || itemStack.getItemMeta() == null) return;
 
-        if(inventory.getName().equalsIgnoreCase("Menu de la boutique")){
+        if(event.getView().getTitle().equalsIgnoreCase("Menu de la boutique")){
             event.setCancelled(true);
 
             if(itemStack.getItemMeta().getDisplayName().equalsIgnoreCase(RankUnit.VIP.getPrefix())){
